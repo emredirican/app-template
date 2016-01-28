@@ -1,0 +1,278 @@
+import java.text.SimpleDateFormat
+
+buildscript {
+
+  repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
+  }
+
+  dependencies {
+    classpath 'io.fabric.tools:gradle:1.+'
+    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+  }
+}
+
+apply plugin: 'com.android.application'
+apply from: '../config/quality/quality.gradle'
+apply plugin: 'com.neenbedankt.android-apt'
+//apply plugin: 'io.fabric'
+
+repositories {
+  mavenCentral()
+  maven { url 'https://maven.fabric.io/public' }
+}
+
+ext {
+  versionMajor = 1
+  versionMinor = 0
+  versionPatch = 0
+}
+
+android {
+  final SDK_VERSION = 23
+
+  compileSdkVersion SDK_VERSION
+  buildToolsVersion '23.0.2'
+
+  defaultConfig {
+    applicationId 'com.emredirican.template'
+    minSdkVersion 15
+    targetSdkVersion SDK_VERSION
+    versionCode getVersionCodeValue()
+    versionName getVersionNameValue()
+    testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+  }
+
+  //TODO create a signing.properties file for the release and RC build.
+  signingConfigs {
+    release {}
+  }
+
+  buildTypes {
+
+    debugTest {
+      applicationIdSuffix '.debugTest'
+      versionNameSuffix '-DEBUG'
+      debuggable true
+      minifyEnabled false
+    }
+
+    debug.initWith(buildTypes.debugTest)
+    debug {
+      applicationIdSuffix '.debug'
+    }
+
+    releaseCandidate.initWith(buildTypes.debugTest)
+    releaseCandidate {
+      applicationIdSuffix ''
+      versionNameSuffix '-RC'
+      signingConfig signingConfigs.release
+    }
+
+    release {
+      minifyEnabled false
+      debuggable false
+      signingConfig signingConfigs.release
+      zipAlignEnabled true
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  testBuildType "debugTest"
+
+  //Enabling this might need additional configuration
+  dataBinding {
+    enabled = false
+  }
+
+  packagingOptions {
+    exclude 'LICENSE.txt'
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+}
+
+configurations.all {
+  resolutionStrategy.force 'org.hamcrest:hamcrest-core:1.3'
+}
+
+dependencies {
+
+  final VC_SUPPORT_LIB = '23.1.1'
+  final VC_ESPRESSO = '2.2.1'
+  final VC_GOOGLE_PLAY = '8.4.0'
+  final VC_DAGGER = '2.0.1'
+  final VC_DEX_MAKER = '1.4'
+  final VC_LEAK_CANARY = '1.3.1'
+  final VC_RETROFIT = '2.0.0-beta2'
+
+  def daggerCompiler = "com.google.dagger:dagger-compiler:$VC_DAGGER"
+  def mockito = 'org.mockito:mockito-core:1.10.19'
+  def leakCanaryNoOp = "com.squareup.leakcanary:leakcanary-android-no-op:$VC_LEAK_CANARY"
+  def leakCanary = "com.squareup.leakcanary:leakcanary-android:$VC_LEAK_CANARY"
+
+  compile fileTree(dir: 'libs', include: ['*.jar'])
+
+  /*
+  Main dependencies
+   */
+  compile "com.android.support:appcompat-v7:$VC_SUPPORT_LIB"
+  compile "com.android.support:design:$VC_SUPPORT_LIB"
+  compile "com.android.support:appcompat-v7:$VC_SUPPORT_LIB"
+  compile "com.android.support:design:$VC_SUPPORT_LIB"
+  compile "com.android.support:recyclerview-v7:$VC_SUPPORT_LIB"
+
+  compile 'com.jakewharton:butterknife:7.0.1'
+  compile 'com.jakewharton.timber:timber:3.1.0'
+  compile 'com.squareup:otto:1.3.6'
+  compile 'com.squareup.picasso:picasso:2.5.2'
+
+  compile "com.squareup.retrofit:retrofit:$VC_RETROFIT"
+  compile "com.squareup.retrofit:converter-gson:$VC_RETROFIT"
+  compile "com.squareup.retrofit:adapter-rxjava:$VC_RETROFIT"
+
+  compile "com.google.dagger:dagger:$VC_DAGGER"
+  apt daggerCompiler
+  provided 'org.glassfish:javax.annotation:10.0-b28'
+
+  compile 'io.reactivex:rxandroid:1.0.1'
+  compile 'io.reactivex:rxjava:1.0.16'
+
+  compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
+    transitive = true;
+  }
+
+  //various play service packages. i.e:
+  compile "com.google.android.gms:play-services-location:$VC_GOOGLE_PLAY"
+
+  /*
+  Common test dependencies
+   */
+  debugTestCompile mockito
+  debugTestCompile leakCanaryNoOp
+
+  /*
+  AndroidTest dependencies
+   */
+  androidTestCompile "com.android.support.test.espresso:espresso-intents:$VC_ESPRESSO"
+  androidTestCompile("com.android.support.test.espresso:espresso-contrib:$VC_ESPRESSO") {
+    exclude module: 'appcompat'
+    exclude module: 'recyclerview-v7'
+    exclude module: 'support-v4'
+  }
+  androidTestCompile "com.crittercism.dexmaker:dexmaker-mockito:$VC_DEX_MAKER"
+  androidTestCompile "com.crittercism.dexmaker:dexmaker-dx:$VC_DEX_MAKER"
+  androidTestCompile mockito //resolve diff
+  androidTestCompile "com.android.support:support-annotations:$VC_SUPPORT_LIB" //resolve diff
+  androidTestApt daggerCompiler
+
+  /*
+  Unit test dependencies
+   */
+  testCompile('junit:junit:4.12') {
+    exclude module: 'hamcrest-core'
+  }
+  testApt daggerCompiler
+
+  /*
+  Release candidate dependencies
+   */
+  releaseCandidateCompile leakCanary
+
+  /*
+  Release dependencies
+   */
+  releaseCompile leakCanaryNoOp
+
+  /*
+  Debug dependencies
+   */
+  debugCompile leakCanary
+
+}
+
+
+/*
+ Adjust depending on the need.
+ */
+
+def getVersionCodeValue() {
+  return versionMajor * 100 + versionMinor * 10 + versionPatch
+}
+
+def getVersionNameValue() {
+
+  def buildValue = ''
+  def runTasks = gradle.startParameter.taskNames
+  if ('crashlyticsUploadDistributionReleaseCandidate' in runTasks ||
+      'crashlyticsUploadDistributionDebug' in
+      runTasks) {
+    def df = new SimpleDateFormat("ddMMyyyy:HHmm");
+    buildValue = df.format(new Date())
+  }
+  def versionNameValue = "${versionMajor}.${versionMinor}.${versionPatch}"
+  if (!buildValue.equals('')) {
+    versionNameValue += "-${buildValue}"
+  }
+  return versionNameValue
+}
+
+//Read the signing config from signing.properties
+def Properties props = new Properties()
+def propFile = new File('signing.properties')
+if (propFile.canRead()) {
+  props.load(new InputStreamReader(new FileInputStream(propFile), "UTF-8"))
+
+  if (props != null &&
+      props.containsKey('RELEASE_STORE_FILE') &&
+      props.containsKey('RELEASE_STORE_PASSWORD') &&
+      props.containsKey('RELEASE_KEY_ALIAS') &&
+      props.containsKey('RELEASE_KEY_PASSWORD')) {
+    android.signingConfigs.release.storeFile = file(props['RELEASE_STORE_FILE'])
+    android.signingConfigs.release.storePassword = props['RELEASE_STORE_PASSWORD']
+    android.signingConfigs.release.keyAlias = props['RELEASE_KEY_ALIAS']
+    android.signingConfigs.release.keyPassword = props['RELEASE_KEY_PASSWORD']
+  } else {
+    println 'signing.properties found but some entries are missing'
+    android.buildTypes.release.signingConfig = null
+  }
+} else {
+  println 'signing.properties not found'
+  android.buildTypes.release.signingConfig = null
+}
+
+//After Evaluate Tasks.
+
+// Get the path to ADB.  Required when running tests directly from Android Studio.
+// Source: http://stackoverflow.com/a/26771087/112705
+def adb = android.getAdbExe().toString()
+
+afterEvaluate {
+  task grantAnimationPermissionDev(type: Exec, dependsOn: 'installDebugTest') {
+    commandLine "$adb shell pm grant $android.defaultConfig.applicationId$android.buildTypes.debugTest.applicationIdSuffix android.permission.SET_ANIMATION_SCALE".
+        split(' ')
+  }
+
+  //in order to be able to read assets in the test package
+  task copyResDirectoryToClasses(type: Copy) {
+    from "${projectDir}/src/testDebugTest/res"
+    into "${buildDir}/intermediates/classes/test/debugTest/res"
+  }
+
+  // When launching individual tests from Android Studio, it seems that only the assemble tasks
+  // get called directly, not the install* versions
+  tasks.each { task ->
+    if (task.name.startsWith('assembleDebugTestAndroidTest')) {
+      task.dependsOn grantAnimationPermissionDev
+    }
+
+    if (task.name.startsWith('assembleDebugTestUnitTest')) {
+      task.dependsOn copyResDirectoryToClasses
+    }
+  }
+}
