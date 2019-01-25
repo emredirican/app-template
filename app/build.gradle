@@ -118,6 +118,8 @@ dependencies {
 
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
   /*
   Main dependencies
    */
@@ -136,6 +138,9 @@ dependencies {
   implementation "com.squareup.retrofit2:adapter-rxjava:$VC_RETROFIT"
 
   implementation "com.google.dagger:dagger:$VC_DAGGER"
+  implementation "com.google.dagger:dagger-android:$VC_DAGGER"
+  implementation "com.google.dagger:dagger-android-support:$VC_DAGGER"
+  annotationProcessor 'com.google.dagger:dagger-android-processor:2.x'
   annotationProcessor daggerCompiler
   compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 
