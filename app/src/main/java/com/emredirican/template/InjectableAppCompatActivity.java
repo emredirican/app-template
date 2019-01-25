@@ -1,6 +1,6 @@
 package com.emredirican.template;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import com.emredirican.template.di.graph.ActivityComponent;
 import com.emredirican.template.di.module.ActivityModule;
 

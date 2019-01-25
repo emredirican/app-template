@@ -43,7 +43,7 @@ android {
     targetSdkVersion SDK_VERSION
     versionCode getVersionCodeValue()
     versionName getVersionNameValue()
-    testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
   }
 
   //TODO create a signing.properties file for the release and RC build.
@@ -93,8 +93,8 @@ android {
   }
 
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_7
-    targetCompatibility JavaVersion.VERSION_1_7
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
   }
 }
 
@@ -104,8 +104,8 @@ configurations.all {
 
 dependencies {
 
-  final VC_SUPPORT_LIB = '23.1.1'
-  final VC_ESPRESSO = '2.2.1'
+  final VC_SUPPORT_LIB = '1.1.0-alpha01'
+  final VC_ESPRESSO = '3.1.0-alpha4'
   final VC_GOOGLE_PLAY = '8.4.0'
   final VC_DAGGER = '2.0.1'
   final VC_DEX_MAKER = '1.4'
@@ -122,13 +122,13 @@ dependencies {
   /*
   Main dependencies
    */
-  implementation "com.android.support:appcompat-v7:$VC_SUPPORT_LIB"
-  implementation "com.android.support:design:$VC_SUPPORT_LIB"
-  implementation "com.android.support:appcompat-v7:$VC_SUPPORT_LIB"
-  implementation "com.android.support:design:$VC_SUPPORT_LIB"
-  implementation "com.android.support:recyclerview-v7:$VC_SUPPORT_LIB"
+  implementation "androidx.appcompat:appcompat:$VC_SUPPORT_LIB"
+  implementation "com.google.android.material:material:1.1.0-alpha02"
+  implementation "androidx.appcompat:appcompat:$VC_SUPPORT_LIB"
+  implementation "androidx.recyclerview:recyclerview:$VC_SUPPORT_LIB"
 
-  implementation 'com.jakewharton:butterknife:7.0.1'
+  implementation 'com.jakewharton:butterknife:10.0.0'
+  annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
   implementation 'com.jakewharton.timber:timber:3.1.0'
   implementation 'com.squareup:otto:1.3.6'
   implementation 'com.squareup.picasso:picasso:2.5.2'
@@ -149,7 +149,7 @@ dependencies {
   }
 
   //various play service packages. i.e:
-  implementation "com.google.android.gms:play-services-location:$VC_GOOGLE_PLAY"
+  implementation "com.google.android.gms:play-services-location:16.0.0"
 
   /*
   Common test dependencies
@@ -160,8 +160,8 @@ dependencies {
   /*
   AndroidTest dependencies
    */
-  androidTestImplementation "com.android.support.test.espresso:espresso-intents:$VC_ESPRESSO"
-  androidTestImplementation("com.android.support.test.espresso:espresso-contrib:$VC_ESPRESSO") {
+  androidTestImplementation "androidx.test.espresso:espresso-intents:$VC_ESPRESSO"
+  androidTestImplementation("androidx.test.espresso:espresso-contrib:$VC_ESPRESSO") {
     exclude module: 'appcompat'
     exclude module: 'recyclerview-v7'
     exclude module: 'support-v4'
@@ -169,7 +169,7 @@ dependencies {
   androidTestImplementation "com.crittercism.dexmaker:dexmaker-mockito:$VC_DEX_MAKER"
   androidTestImplementation "com.crittercism.dexmaker:dexmaker-dx:$VC_DEX_MAKER"
   androidTestImplementation mockito //resolve diff
-  androidTestImplementation "com.android.support:support-annotations:$VC_SUPPORT_LIB" //resolve diff
+  androidTestImplementation "androidx.annotation:annotation:1.0.1" //resolve diff
   androidTestAnnotationProcessor daggerCompiler
 
   /*

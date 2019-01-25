@@ -1,7 +1,7 @@
 package com.emredirican.template;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class SampleActivity extends InjectableAppCompatActivity {
 
