@@ -2,23 +2,17 @@ package com.emredirican.template.di.module;
 
 import android.os.AsyncTask;
 import com.emredirican.template.di.Names;
-import com.squareup.otto.Bus;
-import com.squareup.otto.ThreadEnforcer;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import rx.Scheduler;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
 
 @Module public class UtilityModule {
-
-  @Provides
-  @Singleton
-  public Bus provideBus() {
-    return new Bus(ThreadEnforcer.MAIN);
-  }
 
   @Provides
   @Singleton

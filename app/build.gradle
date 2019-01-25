@@ -10,7 +10,6 @@ buildscript {
   }
 
   dependencies {
-    classpath 'io.fabric.tools:gradle:1.+'
     classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
   }
 }
@@ -19,6 +18,7 @@ apply plugin: 'com.android.application'
 apply from: '../config/quality/quality.gradle'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+//TODO Get an API key for Fabric
 //apply plugin: 'io.fabric'
 
 repositories {
@@ -142,9 +142,8 @@ dependencies {
   implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
   implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
 
-  implementation('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
-    transitive = true;
-  }
+  implementation 'com.google.firebase:firebase-core:16.0.6'
+  implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
 
   //various play service packages. i.e:
   implementation "com.google.android.gms:play-services-location:16.0.0"
