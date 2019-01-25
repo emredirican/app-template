@@ -3,6 +3,7 @@ import java.text.SimpleDateFormat
 buildscript {
 
   repositories {
+    google()
     jcenter()
     mavenCentral()
     maven { url 'https://maven.fabric.io/public' }
@@ -16,7 +17,8 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply from: '../config/quality/quality.gradle'
-apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 //apply plugin: 'io.fabric'
 
 repositories {
@@ -31,14 +33,13 @@ ext {
 }
 
 android {
-  final SDK_VERSION = 23
+  final SDK_VERSION = 28
 
   compileSdkVersion SDK_VERSION
-  buildToolsVersion '23.0.2'
 
   defaultConfig {
     applicationId 'com.emredirican.template'
-    minSdkVersion 15
+    minSdkVersion 19
     targetSdkVersion SDK_VERSION
     versionCode getVersionCodeValue()
     versionName getVersionNameValue()
@@ -116,83 +117,83 @@ dependencies {
   def leakCanaryNoOp = "com.squareup.leakcanary:leakcanary-android-no-op:$VC_LEAK_CANARY"
   def leakCanary = "com.squareup.leakcanary:leakcanary-android:$VC_LEAK_CANARY"
 
-  compile fileTree(dir: 'libs', include: ['*.jar'])
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
 
   /*
   Main dependencies
    */
-  compile "com.android.support:appcompat-v7:$VC_SUPPORT_LIB"
-  compile "com.android.support:design:$VC_SUPPORT_LIB"
-  compile "com.android.support:appcompat-v7:$VC_SUPPORT_LIB"
-  compile "com.android.support:design:$VC_SUPPORT_LIB"
-  compile "com.android.support:recyclerview-v7:$VC_SUPPORT_LIB"
+  implementation "com.android.support:appcompat-v7:$VC_SUPPORT_LIB"
+  implementation "com.android.support:design:$VC_SUPPORT_LIB"
+  implementation "com.android.support:appcompat-v7:$VC_SUPPORT_LIB"
+  implementation "com.android.support:design:$VC_SUPPORT_LIB"
+  implementation "com.android.support:recyclerview-v7:$VC_SUPPORT_LIB"
 
-  compile 'com.jakewharton:butterknife:7.0.1'
-  compile 'com.jakewharton.timber:timber:3.1.0'
-  compile 'com.squareup:otto:1.3.6'
-  compile 'com.squareup.picasso:picasso:2.5.2'
+  implementation 'com.jakewharton:butterknife:7.0.1'
+  implementation 'com.jakewharton.timber:timber:3.1.0'
+  implementation 'com.squareup:otto:1.3.6'
+  implementation 'com.squareup.picasso:picasso:2.5.2'
 
-  compile "com.squareup.retrofit:retrofit:$VC_RETROFIT"
-  compile "com.squareup.retrofit:converter-gson:$VC_RETROFIT"
-  compile "com.squareup.retrofit:adapter-rxjava:$VC_RETROFIT"
+  implementation "com.squareup.retrofit:retrofit:$VC_RETROFIT"
+  implementation "com.squareup.retrofit:converter-gson:$VC_RETROFIT"
+  implementation "com.squareup.retrofit:adapter-rxjava:$VC_RETROFIT"
 
-  compile "com.google.dagger:dagger:$VC_DAGGER"
-  apt daggerCompiler
-  provided 'org.glassfish:javax.annotation:10.0-b28'
+  implementation "com.google.dagger:dagger:$VC_DAGGER"
+  annotationProcessor daggerCompiler
+  compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 
-  compile 'io.reactivex:rxandroid:1.0.1'
-  compile 'io.reactivex:rxjava:1.0.16'
+  implementation 'io.reactivex:rxandroid:1.0.1'
+  implementation 'io.reactivex:rxjava:1.0.16'
 
-  compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
+  implementation('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
     transitive = true;
   }
 
   //various play service packages. i.e:
-  compile "com.google.android.gms:play-services-location:$VC_GOOGLE_PLAY"
+  implementation "com.google.android.gms:play-services-location:$VC_GOOGLE_PLAY"
 
   /*
   Common test dependencies
    */
-  debugTestCompile mockito
-  debugTestCompile leakCanaryNoOp
+  debugTestImplementation mockito
+  debugTestImplementation leakCanaryNoOp
 
   /*
   AndroidTest dependencies
    */
-  androidTestCompile "com.android.support.test.espresso:espresso-intents:$VC_ESPRESSO"
-  androidTestCompile("com.android.support.test.espresso:espresso-contrib:$VC_ESPRESSO") {
+  androidTestImplementation "com.android.support.test.espresso:espresso-intents:$VC_ESPRESSO"
+  androidTestImplementation("com.android.support.test.espresso:espresso-contrib:$VC_ESPRESSO") {
     exclude module: 'appcompat'
     exclude module: 'recyclerview-v7'
     exclude module: 'support-v4'
   }
-  androidTestCompile "com.crittercism.dexmaker:dexmaker-mockito:$VC_DEX_MAKER"
-  androidTestCompile "com.crittercism.dexmaker:dexmaker-dx:$VC_DEX_MAKER"
-  androidTestCompile mockito //resolve diff
-  androidTestCompile "com.android.support:support-annotations:$VC_SUPPORT_LIB" //resolve diff
-  androidTestApt daggerCompiler
+  androidTestImplementation "com.crittercism.dexmaker:dexmaker-mockito:$VC_DEX_MAKER"
+  androidTestImplementation "com.crittercism.dexmaker:dexmaker-dx:$VC_DEX_MAKER"
+  androidTestImplementation mockito //resolve diff
+  androidTestImplementation "com.android.support:support-annotations:$VC_SUPPORT_LIB" //resolve diff
+  androidTestAnnotationProcessor daggerCompiler
 
   /*
   Unit test dependencies
    */
-  testCompile('junit:junit:4.12') {
+  testImplementation('junit:junit:4.12') {
     exclude module: 'hamcrest-core'
   }
-  testApt daggerCompiler
+  testAnnotationProcessor daggerCompiler
 
   /*
   Release candidate dependencies
    */
-  releaseCandidateCompile leakCanary
+  releaseCandidateImplementation leakCanary
 
   /*
   Release dependencies
    */
-  releaseCompile leakCanaryNoOp
+  releaseImplementation leakCanaryNoOp
 
   /*
   Debug dependencies
    */
-  debugCompile leakCanary
+  debugImplementation leakCanary
 
 }
 
