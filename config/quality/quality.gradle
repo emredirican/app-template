@@ -4,8 +4,7 @@ apply plugin: 'pmd'
 
 repositories {
   mavenLocal()
-  // or when all modules should be provided
-  maven { url "http://dl.bintray.com/arturbosch/code-analysis" }
+  jcenter()
 }
 
 configurations {
@@ -13,7 +12,7 @@ configurations {
 }
 
 dependencies {
-  final VC_DETEKT = '1.0.0.RC8'
+  final VC_DETEKT = '1.0.0-RC12'
 
   checkstyle 'com.puppycrawl.tools:checkstyle:7.6'
   detekt "io.gitlab.arturbosch.detekt:detekt-cli:$VC_DETEKT"
