@@ -14,7 +14,7 @@ configurations {
 dependencies {
   final VC_DETEKT = '1.0.0-RC12'
 
-  checkstyle 'com.puppycrawl.tools:checkstyle:7.6'
+  checkstyle 'com.puppycrawl.tools:checkstyle:8.17'
   detekt "io.gitlab.arturbosch.detekt:detekt-cli:$VC_DETEKT"
   detekt "io.gitlab.arturbosch.detekt:detekt-formatting:$VC_DETEKT"
 }
